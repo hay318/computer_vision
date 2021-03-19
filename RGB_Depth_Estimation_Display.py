@@ -112,13 +112,12 @@ def depth_to_xyz_and_rgb(uu, vv, dep):
     pcx = (uu - cx_d) * pcz / fx_d
     pcy = ((vv - cy_d) * pcz / fy_d)
 
-    # apply extrinsic calibration
+    # Extrinsic Calibration
     P3D = np.array([pcx, pcy, pcz])
     P3Dp = np.dot(RR, P3D) - TT
     uup = (P3Dp[0] * fx_rgb / P3Dp[2] + cx_rgb)
     vvp = (P3Dp[1] * fy_rgb / P3Dp[2] + cy_rgb)
 
-    # return a point in point cloud and its corresponding color indices
     return P3D, uup, vvp
 
 
@@ -134,29 +133,29 @@ def display_fun(mat, selected_depth, selected_color, results, excel):
     writer = pd.ExcelWriter(excel, engine='openpyxl')
     wb = writer.book
     route = mat
-    file_lists = os.listdir(route)
+    db_lis = os.listdir(route)
 
     route3 = selected_depth
     included_extensions = ['png']
-    file_lists3 = [fn for fn in os.listdir(route3)
+    db_lis3 = [fn for fn in os.listdir(route3)
                    if any(fn.endswith(ext) for ext in included_extensions)]
 
     route4 = selected_color
-    file_lists4 = os.listdir(route4)
+    db_lis4 = os.listdir(route4)
 
     route6 = results
-    file_lists6 = os.listdir(route6)
+    db_lis6 = os.listdir(route6)
 
     disp_list = []
     disp_list_b = []
     data = []
 
-    for idx, list1 in enumerate(file_lists4):
-        for i in range(len(file_lists3)):
-            if list1.split('.')[0] == file_lists3[i].split('.')[0]: 
+    for idx, list1 in enumerate(db_lis4):
+        for i in range(len(db_lis3)):
+            if list1.split('.')[0] == db_lis3[i].split('.')[0]: 
                 rgb = os.route.join(route4, list1)
-                depth = os.route.join(route3, sorted(file_lists3)[i])
-                m = sorted(file_lists)[idx]
+                depth = os.route.join(route3, sorted(db_lis3)[i])
+                m = sorted(db_lis)[idx]
                 mat2 = sio.loadmat(os.route.join(route, m))
                 abc = list1.split('.')[0]
                 disp_list = []
@@ -179,4 +178,3 @@ def display_fun(mat, selected_depth, selected_color, results, excel):
                 data = pd.DataFrame(disp_list_b)
                 data.to_excel(writer, index=False)
                 wb.save(excel)
-    #f.close
